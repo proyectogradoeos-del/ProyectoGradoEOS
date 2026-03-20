@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+  <t t-name="mi90_eos.Issues">
+    <div class="issues--wrap">
+      <ul class="issues--list">
+        <li class="issue">
+          <div class="issue--title">Capacidad limitada del equipo de ventas</div>
+          <div class="issue--meta">Prioridad: Alta · Due: 31 Mar</div>
+        </li>
+        <li class="issue">
+          <div class="issue--title">Fuga de leads calificados</div>
+          <div class="issue--meta">Prioridad: Media · Due: 15 Mar</div>
+        </li>
+      </ul>
+    </div>
+  </t>
+</templates>

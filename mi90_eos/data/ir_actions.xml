@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_mi90_dashboard_data" model="ir.actions.client">
+        <field name="name">Mi90 Dashboard (data)</field>
+        <field name="tag">mi90_eos.dashboard_action</field>
+        <field name="target">current</field>
+    </record>
+
+    <!-- Menús de demo removidos para evitar duplicados; la acción sigue disponible -->
+</odoo>

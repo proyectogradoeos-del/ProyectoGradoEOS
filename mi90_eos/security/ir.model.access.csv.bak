@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eos_rock,eos.rock,model_eos_rock,base.group_user,1,1,1,1
+access_eos_key_result,eos.key_result,model_eos_key_result,base.group_user,1,1,1,1
+access_eos_todo,eos.todo,model_eos_todo,base.group_user,1,1,1,1id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eos_rock,user_eos_rock,model_eos_rock,base.group_user,1,1,1,0
+access_eos_key_result,user_eos_key_result,model_eos_key_result,base.group_user,1,1,1,0
+access_eos_todo,user_eos_todo,model_eos_todo,base.group_user,1,1,1,0
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eos_dashboard,eos.dashboard,model_eos_dashboard,base.group_user,1,1,1,1
