@@ -1,8 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_eos_rock,eos.rock,model_eos_rock,base.group_user,1,1,1,1
-access_eos_key_result,eos.key.result,model_eos_key_result,base.group_user,1,1,1,1
-access_eos_todo,eos.todo,model_eos_todo,base.group_user,1,1,1,1
-access_eos_issue,eos.issue,model_eos_issue,base.group_user,1,1,1,1
-access_eos_meeting,eos.meeting,model_eos_meeting,base.group_user,1,1,1,1
-access_eos_kpi,eos.kpi,model_eos_kpi,base.group_user,1,1,1,1
-access_eos_kpi_value,eos.kpi.value,model_eos_kpi_value,base.group_user,1,1,1,1
