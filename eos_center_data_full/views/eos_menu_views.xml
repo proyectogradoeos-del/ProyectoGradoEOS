@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_eos_root" name="EOS Center Data"
+                  sequence="100" groups="eos_center_data_full.group_eos_collaborator"/>
+
+        <!-- 1. VISION -->
+        <menuitem id="menu_eos_vision" name="1. Visión"
+                  parent="menu_eos_root" sequence="10"
+                  groups="eos_center_data_full.group_eos_collaborator"/>
+        <menuitem id="menu_eos_vision_vto" name="V/TO — Visión y Tracción"
+                  parent="menu_eos_vision" action="action_eos_vision" sequence="10"/>
+        <menuitem id="menu_eos_vision_rocks" name="Rocas — Prioridades"
+                  parent="menu_eos_vision" action="action_eos_vision_rocks" sequence="20"/>
+        <menuitem id="menu_eos_vision_score" name="Puntuación de Visión"
+                  parent="menu_eos_vision" action="action_eos_vision_score" sequence="30"
+                  groups="eos_center_data_full.group_eos_director"/>
+
+        <!-- 2. PERSONAS -->
+        <menuitem id="menu_eos_people" name="2. Personas"
+                  parent="menu_eos_root" sequence="20"
+                  groups="eos_center_data_full.group_eos_collaborator"/>
+        <menuitem id="menu_eos_people_seat" name="Accountability Chart"
+                  parent="menu_eos_people" action="action_eos_seat" sequence="10"/>
+        <menuitem id="menu_eos_people_gwc" name="Evaluaciones GWC"
+                  parent="menu_eos_people" action="action_eos_people_evaluation" sequence="20"
+                  groups="eos_center_data_full.group_eos_director"/>
+
+        <!-- 3. DATOS -->
+        <menuitem id="menu_eos_data" name="3. Datos"
+                  parent="menu_eos_root" sequence="30"
+                  groups="eos_center_data_full.group_eos_collaborator"/>
+        <menuitem id="menu_eos_data_scorecard" name="Scorecard Semanal"
+                  parent="menu_eos_data" action="action_eos_scorecard" sequence="10"/>
+        <menuitem id="menu_eos_data_okr" name="OKRs"
+                  parent="menu_eos_data" action="action_eos_okr" sequence="20"/>
+
+        <!-- 4. PROBLEMAS -->
+        <menuitem id="menu_eos_issues" name="4. Problemas"
+                  parent="menu_eos_root" sequence="40"
+                  groups="eos_center_data_full.group_eos_collaborator"/>
+        <menuitem id="menu_eos_issues_list" name="Issues List (IDS)"
+                  parent="menu_eos_issues" action="action_eos_issue" sequence="10"/>
+
+        <!-- 5. PROCESOS -->
+        <menuitem id="menu_eos_processes" name="5. Procesos"
+                  parent="menu_eos_root" sequence="50"
+                  groups="eos_center_data_full.group_eos_collaborator"/>
+        <menuitem id="menu_eos_processes_list" name="Procesos Críticos"
+                  parent="menu_eos_processes" action="action_eos_process" sequence="10"/>
+
+        <!-- 6. TRACCION -->
+        <menuitem id="menu_eos_traction" name="6. Tracción"
+                  parent="menu_eos_root" sequence="60"
+                  groups="eos_center_data_full.group_eos_collaborator"/>
+        <menuitem id="menu_eos_traction_meetings" name="Reuniones L10"
+                  parent="menu_eos_traction" action="action_eos_meeting" sequence="10"
+                  groups="eos_center_data_full.group_eos_leader"/>
+        <menuitem id="menu_eos_traction_todos" name="To-Dos Semanales"
+                  parent="menu_eos_traction" action="action_eos_todo" sequence="20"/>
+    </data>
+</odoo>
+

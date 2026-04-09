@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- ============================================================
+             VISTAS: Componente 5 — PROCESOS
+             ============================================================ -->
+    <!-- Formulario Proceso -->
+    <record id="view_eos_process_form" model="ir.ui.view">
+      <field name="name">eos.process.form</field>
+      <field name="model">eos.process</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Proceso Crítico EOS">
+          <header>
+            <button name="action_mark_documented" string="📄 Documentado" type="object" class="btn-primary" invisible="state != 'draft'" />
+            <button name="action_mark_followed" string="✅ Seguido por Todos" type="object" class="btn-success" invisible="state != 'documented'" />
+            <button name="action_needs_update" string="⚠️ Requiere Actualización" type="object" invisible="state not in ['documented','followed']" />
+            <field name="state" widget="statusbar" statusbar_visible="draft,documented,followed" />
+          </header>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+              <button class="oe_stat_button" icon="fa-list-ol" type="object" name="action_view_steps">
+                <field name="step_count" widget="statinfo" string="Pasos" />
+              </button>
+            </div>
+            <div class="oe_title">
+              <h1>
+                <field name="name" placeholder="Nombre del Proceso Crítico" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="company_id" />
+                <field name="process_owner_id" />
+                <field name="department_id" />
+                <field name="process_category" />
+              </group>
+              <group>
+                <field name="version" />
+                <field name="last_review_date" />
+              </group>
+            </group>
+            <notebook>
+              <page string="Documentación del Proceso">
+                <group>
+                  <field name="purpose" widget="text" colspan="2" placeholder="¿Por qué existe este proceso? ¿Qué resultado produce?" />
+                  <field name="scope" widget="text" colspan="2" placeholder="¿Cuándo empieza y cuándo termina el proceso?" />
+                  <field name="expected_output" widget="text" colspan="2" placeholder="¿Cómo se ve el proceso completado exitosamente?" />
+                </group>
+              </page>
+              <page string="Pasos del Proceso">
+                <field name="step_ids">
+                  <tree editable="bottom">
+                    <field name="sequence" widget="handle" />
+                    <field name="name" string="Descripción del Paso" />
+                    <field name="step_owner_id" string="Responsable" />
+                    <field name="tools_used" string="Herramientas" />
+                    <field name="expected_time" string="Tiempo (h)" optional="show" />
+                    <field name="is_critical" optional="show" />
+                  </tree>
+                </field>
+              </page>
+              <page string="Adherencia y Seguimiento">
+                <group>
+                  <field name="adherence_notes" widget="text" colspan="2" />
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista Procesos -->
+    <record id="view_eos_process_list" model="ir.ui.view">
+      <field name="name">eos.process.list</field>
+      <field name="model">eos.process</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Procesos Críticos">
+          <field name="sequence" widget="handle" />
+          <field name="name" />
+          <field name="process_category" />
+          <field name="process_owner_id" />
+          <field name="step_count" />
+          <field name="version" />
+          <field name="last_review_date" />
+          <field name="state" widget="badge" decoration-success="state == 'followed'" decoration-info="state == 'documented'" decoration-warning="state == 'needs_update'" />
+        </tree>
+      </field>
+    </record>
+    <!-- Acción Procesos -->
+    <record id="action_eos_process" model="ir.actions.act_window">
+      <field name="name">Procesos Críticos</field>
+      <field name="res_model">eos.process</field>
+      <field name="view_mode">list,form</field>
+    </record>
+  </data>
+</odoo>

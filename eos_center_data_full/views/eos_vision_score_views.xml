@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- ============================================================
+             VISTAS: eos.vision.score (Puntuación de Visión)
+             ============================================================ -->
+    <!-- Formulario de Puntuación de Visión -->
+    <record id="view_eos_vision_score_form" model="ir.ui.view">
+      <field name="name">eos.vision.score.form</field>
+      <field name="model">eos.vision.score</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Puntuación de Visión">
+          <header>
+            <button name="action_submit" string="Confirmar Puntuación" type="object" class="btn-primary" invisible="state == 'done'" confirm="¿Confirmas que quieres enviar esta puntuación? No podrá modificarse después." />
+            <field name="state" widget="statusbar" statusbar_visible="draft,done" />
+          </header>
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="display_name" readonly="1" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="vision_id" readonly="state == 'done'" />
+                <field name="evaluator_id" readonly="state == 'done'" />
+              </group>
+              <group>
+                <field name="date" readonly="state == 'done'" />
+                <field name="alignment_level" widget="badge" decoration-success="alignment_level == 'high'" decoration-warning="alignment_level == 'medium'" decoration-danger="alignment_level == 'low'" />
+              </group>
+            </group>
+            <!-- RESUMEN DE PUNTUACIÓN -->
+            <group string="Resultado de la Evaluación">
+              <group>
+                <field name="score_total" />
+              </group>
+              <group>
+                <field name="score_percentage" widget="progressbar" options="{'editable': false}" />
+              </group>
+            </group>
+            <separator string="Calificación por Componente del V/TO (1 = Muy bajo | 10 = Excelente)" />
+            <!-- PREGUNTAS DE EVALUACIÓN -->
+            <group>
+              <group string="Sección 1 — Identidad">
+                <field name="score_core_values" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+                <field name="score_core_focus" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+              </group>
+              <group string="Sección 2 — Estrategia de Largo Plazo">
+                <field name="score_10_year" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+                <field name="score_marketing" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+              </group>
+            </group>
+            <group>
+              <group string="Sección 3 — Planes de Mediano Plazo">
+                <field name="score_3_year" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+                <field name="score_1_year" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+              </group>
+              <group string="Sección 4 — Ejecución">
+                <field name="score_rocks" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+                <field name="score_issues" readonly="state == 'done'" widget="priority" options="{'stars': 10}" />
+              </group>
+            </group>
+            <group string="Comentarios y Áreas de Mejora">
+              <field name="comments" placeholder="¿Qué puntos necesitan más trabajo de alineación en el equipo?" widget="text" readonly="state == 'done'" colspan="2" />
+            </group>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista de Puntuaciones de Visión -->
+    <record id="view_eos_vision_score_list" model="ir.ui.view">
+      <field name="name">eos.vision.score.list</field>
+      <field name="model">eos.vision.score</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Puntuaciones de Visión" decoration-success="alignment_level == 'high'" decoration-warning="alignment_level == 'medium'" decoration-danger="alignment_level == 'low'">
+          <field name="date" />
+          <field name="vision_id" />
+          <field name="evaluator_id" />
+          <field name="score_total" />
+          <field name="score_percentage" widget="progressbar" />
+          <field name="alignment_level" widget="badge" decoration-success="alignment_level == 'high'" decoration-warning="alignment_level == 'medium'" decoration-danger="alignment_level == 'low'" />
+          <field name="state" widget="badge" />
+        </tree>
+      </field>
+    </record>
+    <!-- Búsqueda de Puntuaciones -->
+    <record id="view_eos_vision_score_search" model="ir.ui.view">
+      <field name="name">eos.vision.score.search</field>
+      <field name="model">eos.vision.score</field>
+      <field name="type">search</field>
+      <field name="arch" type="xml">
+        <search string="Buscar Puntuaciones">
+          <field name="vision_id" />
+          <field name="evaluator_id" />
+          <separator />
+          <filter string="Alineados (≥80%)" name="high" domain="[('alignment_level','=','high')]" />
+          <filter string="En proceso (60-79%)" name="medium" domain="[('alignment_level','=','medium')]" />
+          <filter string="Desalineados (&lt;60%)" name="low" domain="[('alignment_level','=','low')]" />
+          <separator />
+          <filter string="Confirmadas" name="done" domain="[('state','=','done')]" />
+          <separator />
+          <filter string="Mis Evaluaciones" name="my_scores" domain="[('evaluator_id','=',uid)]" />
+          <separator />
+          <group expand="0" string="Agrupar por">
+            <filter string="V/TO" name="group_vision" context="{'group_by': 'vision_id'}" />
+            <filter string="Evaluador" name="group_evaluator" context="{'group_by': 'evaluator_id'}" />
+            <filter string="Nivel de Alineación" name="group_alignment" context="{'group_by': 'alignment_level'}" />
+            <filter string="Mes" name="group_month" context="{'group_by': 'date:month'}" />
+          </group>
+        </search>
+      </field>
+    </record>
+    <!-- Acción para Puntuación de Visión -->
+    <record id="action_eos_vision_score" model="ir.actions.act_window">
+      <field name="name">Puntuación de Visión</field>
+      <field name="res_model">eos.vision.score</field>
+      <field name="view_mode">list,form</field>
+      <field name="search_view_id" ref="view_eos_vision_score_search" />
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+                    ¡Realiza la primera evaluación de visión!
+                </p>
+        <p>
+                    La <strong>Puntuación de Visión</strong> mide qué tan bien
+                    el equipo de liderazgo comparte, comprende y apoya la visión.
+                    El objetivo es alcanzar un promedio ≥ 80%.
+                </p>
+      </field>
+    </record>
+  </data>
+</odoo>
