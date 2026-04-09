@@ -10,6 +10,7 @@
         <record id="view_eos_vision_form" model="ir.ui.view">
             <field name="name">eos.vision.form</field>
             <field name="model">eos.vision</field>
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="V/TO — Visión y Tracción">
 
@@ -25,17 +26,17 @@
                                 type="object"
                                 class="btn-success"
                                 invisible="state != 'review'"
-                                groups="eos_center_data.group_eos_director"/>
+                                groups="eos_center_data_full.group_eos_director"/>
                         <button name="action_set_draft"
                                 string="Volver a Borrador"
                                 type="object"
                                 invisible="state not in ['review']"
-                                groups="eos_center_data.group_eos_director"/>
+                                groups="eos_center_data_full.group_eos_director"/>
                         <button name="action_archive_vto"
                                 string="Archivar"
                                 type="object"
                                 invisible="state != 'approved'"
-                                groups="eos_center_data.group_eos_admin"
+                                groups="eos_center_data_full.group_eos_admin"
                                 confirm="¿Estás seguro de archivar este V/TO? Esta acción lo inactivará."/>
                         <field name="state"
                                widget="statusbar"
@@ -53,19 +54,7 @@
                                        widget="statinfo"
                                        string="Rocas"/>
                             </button>
-                            <button name="%(action_eos_vision_score)d"
-                                    type="action"
-                                    class="oe_stat_button"
-                                    icon="fa-star">
-                                <div class="o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="vision_score_avg"
-                                               widget="float"
-                                               digits="[4,1]"/>%
-                                    </span>
-                                    <span class="o_stat_text">Puntuación Visión</span>
-                                </div>
-                            </button>
+
                         </div>
 
                         <!-- Encabezado del documento -->
@@ -191,27 +180,7 @@
                                 <separator string="Prioridades Anuales (Rocas de Empresa)"/>
 
                                 <field name="annual_rocks_ids"
-                                       context="{'default_vision_id': active_id}">
-                                    <list editable="bottom" decoration-success="state == 'done'"
-                                           decoration-warning="state == 'off_track'"
-                                           decoration-muted="state == 'cancelled'">
-                                        <field name="sequence" widget="handle"/>
-                                        <field name="name" string="Roca"/>
-                                        <field name="owner_id"/>
-                                        <field name="rock_type"/>
-                                        <field name="quarter"/>
-                                        <field name="date_deadline"/>
-                                        <field name="progress" widget="progressbar"/>
-                                        <field name="state" widget="badge"
-                                               decoration-success="state == 'done'"
-                                               decoration-warning="state == 'off_track'"
-                                               decoration-info="state == 'on_track'"
-                                               decoration-muted="state == 'cancelled'"/>
-                                        <button name="action_mark_done" string="✔"
-                                                type="object" title="Marcar como completada"
-                                                invisible="state == 'done'"/>
-                                    </list>
-                                </field>
+                                       context="{'default_vision_id': active_id}"/>
 
                             </page>
 
@@ -253,8 +222,9 @@
         <record id="view_eos_vision_list" model="ir.ui.view">
             <field name="name">eos.vision.list</field>
             <field name="model">eos.vision</field>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
-                <list string="V/TO — Visiones" decoration-muted="state == 'archived'"
+                <tree string="V/TO — Visiones" decoration-muted="state == 'archived'"
                        decoration-success="state == 'approved'">
                     <field name="name"/>
                     <field name="company_id"/>
@@ -266,7 +236,7 @@
                            decoration-success="state == 'approved'"
                            decoration-warning="state == 'review'"
                            decoration-muted="state == 'archived'"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -274,6 +244,7 @@
         <record id="view_eos_vision_search" model="ir.ui.view">
             <field name="name">eos.vision.search</field>
             <field name="model">eos.vision</field>
+            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Buscar V/TO">
                     <field name="name" string="Nombre del V/TO"/>
@@ -330,6 +301,7 @@
         <record id="view_eos_vision_rock_form" model="ir.ui.view">
             <field name="name">eos.vision.rock.form</field>
             <field name="model">eos.vision.rock</field>
+            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Roca — Prioridad Estratégica">
                     <header>
@@ -398,8 +370,9 @@
         <record id="view_eos_vision_rock_list" model="ir.ui.view">
             <field name="name">eos.vision.rock.list</field>
             <field name="model">eos.vision.rock</field>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
-                <list string="Rocas"
+                <tree string="Rocas"
                        decoration-success="state == 'done'"
                        decoration-warning="state == 'off_track'"
                        decoration-muted="state == 'cancelled'">
@@ -416,7 +389,7 @@
                            decoration-success="state == 'done'"
                            decoration-warning="state == 'off_track'"
                            decoration-info="state == 'on_track'"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -424,6 +397,7 @@
         <record id="view_eos_vision_rock_kanban" model="ir.ui.view">
             <field name="name">eos.vision.rock.kanban</field>
             <field name="model">eos.vision.rock</field>
+            <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_small_column">
                     <field name="name"/>
@@ -464,6 +438,7 @@
         <record id="view_eos_vision_rock_search" model="ir.ui.view">
             <field name="name">eos.vision.rock.search</field>
             <field name="model">eos.vision.rock</field>
+            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Buscar Rocas">
                     <field name="name"/>
@@ -512,3 +487,4 @@
 
     </data>
 </odoo>
+

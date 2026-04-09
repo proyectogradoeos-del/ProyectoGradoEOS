@@ -6,7 +6,7 @@
     'description': """
 EOS Center Data — Versión Completa (100%)
 ==========================================
-M�dulo para TLP Holding que digitaliza los 6 componentes EOS en Odoo 17.
+Módulo para TLP Holding que digitaliza los 6 componentes EOS en Odoo 17.
 Componentes: Visión, Personas, Datos, Problemas, Procesos, Tracción.
     """,
     'author': 'EOS Center Data Team - Universidad El Bosque',
@@ -32,7 +32,7 @@ Componentes: Visión, Personas, Datos, Problemas, Procesos, Tracción.
             'eos_center_data_full/static/src/css/eos_styles.css',
         ],
     },
-    'images': ['static/description/icon.png'],
+    # 'images': ['static/description/icon.png'],  # Crear icono primero
     'installable': True,
     'application': True,
     'auto_install': False,

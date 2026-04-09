@@ -51,6 +51,12 @@ class EosVision(models.Model):
         help='Los registros inactivos se archivan y no aparecen en las búsquedas normales.',
     )
 
+    sequence = fields.Integer(
+        string='Secuencia',
+        default=10,
+        help='Orden de los V/TO en las listas y vistas.',
+    )
+
     state = fields.Selection(
         selection=[
             ('draft', 'Borrador'),

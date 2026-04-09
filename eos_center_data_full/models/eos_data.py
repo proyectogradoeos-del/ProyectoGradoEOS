@@ -120,6 +120,17 @@ class EosScorecard(models.Model):
             record.kpi_red_count = red
             record.health_percentage = (green / total * 100) if total > 0 else 0.0
 
+    def action_view_kpis(self):
+        self.ensure_one()
+        return {
+            'name': 'KPIs',
+            'type': 'ir.actions.act_window',
+            'res_model': 'eos.kpi',
+            'view_mode': 'list,form',
+            'domain': [('scorecard_id', '=', self.id)],
+            'context': {'default_scorecard_id': self.id},
+        }
+
 
 class EosKpi(models.Model):
     """

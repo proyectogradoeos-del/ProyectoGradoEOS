@@ -192,6 +192,18 @@ class EosProcess(models.Model):
         for record in self:
             record.step_count = len(record.step_ids)
 
+    def action_view_steps(self):
+        self.ensure_one()
+        return {
+            'name': 'Pasos',
+            'type': 'ir.actions.act_window',
+            'res_model': 'eos.process.step',
+            'view_mode': 'list,form',
+            'domain': [('process_id', '=', self.id)],
+            'context': {'default_process_id': self.id},
+        }
+
+
     def action_mark_documented(self):
         for record in self:
             record.write({'state': 'documented'})
