@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- ============================================================
+             VISTAS: Componente 4 — PROBLEMAS (Issues / IDS)
+             ============================================================ -->
+    <!-- Formulario Issue -->
+    <record id="view_eos_issue_form" model="ir.ui.view">
+      <field name="name">eos.issue.form</field>
+      <field name="model">eos.issue</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Issue — Proceso IDS">
+          <header>
+            <button name="action_start_discussion" string="💬 Discutir" type="object" class="btn-primary" invisible="state != 'identified'" />
+            <button name="action_mark_solved" string="✅ Resolver" type="object" class="btn-success" invisible="state != 'discussing'" />
+            <button name="action_drop" string="🗑️ Descartar" type="object" invisible="state in ['solved', 'dropped']" />
+            <button name="action_reopen" string="↩ Reabrir" type="object" invisible="state not in ['solved', 'dropped']" />
+            <field name="state" widget="statusbar" statusbar_visible="identified,discussing,solved" />
+          </header>
+          <sheet>
+            <div class="oe_title">
+              <label for="priority" />
+              <field name="priority" widget="priority" />
+              <label for="name" />
+              <h1>
+                <field name="name" placeholder="Describe el problema raíz de forma clara y concisa..." />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="company_id" />
+                <field name="issue_type" />
+                <field name="identified_by" />
+                <field name="date_identified" />
+                <field name="recurring" />
+              </group>
+              <group>
+                <field name="department_id" />
+                <field name="related_rock_id" />
+                <field name="owner_id" />
+                <field name="date_resolution" />
+                <field name="date_resolved" readonly="1" />
+              </group>
+            </group>
+            <notebook>
+              <page string="🔍 I — Identificar">
+                <group>
+                  <field name="root_cause" widget="text" colspan="2" placeholder="¿Cuál es la causa RAÍZ? (No el síntoma) Usa '5 Porqués' si es necesario..." />
+                  <field name="impact" widget="text" colspan="2" placeholder="¿Qué pasa si NO se resuelve este issue?" />
+                </group>
+              </page>
+              <page string="💬 D — Discutir">
+                <group>
+                  <field name="discussed_in_meeting_id" />
+                  <field name="date_discussed" />
+                  <field name="discussion_notes" widget="text" colspan="2" placeholder="Resumen de la discusión del equipo..." />
+                </group>
+              </page>
+              <page string="✅ S — Resolver">
+                <group>
+                  <field name="solution" widget="text" colspan="2" placeholder="Decisión concreta del equipo para resolver este issue..." />
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista Issues -->
+    <record id="view_eos_issue_list" model="ir.ui.view">
+      <field name="name">eos.issue.list</field>
+      <field name="model">eos.issue</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Issues List" decoration-muted="state in ['solved','dropped']" decoration-danger="priority == '2'">
+          <field name="priority" widget="priority" />
+          <field name="name" />
+          <field name="issue_type" />
+          <field name="identified_by" />
+          <field name="date_identified" />
+          <field name="owner_id" />
+          <field name="date_resolution" />
+          <field name="recurring" optional="show" />
+          <field name="state" widget="badge" decoration-success="state == 'solved'" decoration-warning="state == 'discussing'" decoration-muted="state == 'dropped'" />
+        </tree>
+      </field>
+    </record>
+    <!-- Kanban Issues -->
+    <record id="view_eos_issue_kanban" model="ir.ui.view">
+      <field name="name">eos.issue.kanban</field>
+      <field name="model">eos.issue</field>
+      <field name="type">kanban</field>
+      <field name="arch" type="xml">
+        <kanban default_group_by="state">
+          <field name="name" />
+          <field name="priority" />
+          <field name="owner_id" />
+          <field name="state" />
+          <templates>
+            <t t-name="kanban-box">
+              <div class="oe_kanban_global_click">
+                <div class="o_kanban_record_title">
+                  <field name="priority" widget="priority" />
+                  <strong>
+                    <field name="name" />
+                  </strong>
+                </div>
+                <div class="o_kanban_record_body">
+                  <div>
+                    <span class="text-muted">Responsable: </span>
+                    <field name="owner_id" />
+                  </div>
+                </div>
+              </div>
+            </t>
+          </templates>
+        </kanban>
+      </field>
+    </record>
+    <!-- Búsqueda Issues -->
+    <record id="view_eos_issue_search" model="ir.ui.view">
+      <field name="name">eos.issue.search</field>
+      <field name="model">eos.issue</field>
+      <field name="type">search</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name" />
+          <field name="owner_id" />
+          <separator />
+          <filter string="Abiertos" name="open" domain="[('state','in',['identified','discussing'])]" />
+          <filter string="Resueltos" name="solved" domain="[('state','=','solved')]" />
+          <filter string="Recurrentes" name="recurring" domain="[('recurring','=',True)]" />
+          <filter string="Mis Issues" name="my_issues" domain="[('owner_id','=',uid)]" />
+          <group expand="0" string="Agrupar por">
+            <filter string="Estado" name="group_state" context="{'group_by': 'state'}" />
+            <filter string="Tipo" name="group_type" context="{'group_by': 'issue_type'}" />
+          </group>
+        </search>
+      </field>
+    </record>
+    <!-- Acción Issues -->
+    <record id="action_eos_issue" model="ir.actions.act_window">
+      <field name="name">Issues — Lista de Problemas</field>
+      <field name="res_model">eos.issue</field>
+      <field name="view_mode">kanban,list,form</field>
+      <field name="search_view_id" ref="view_eos_issue_search" />
+      <field name="context">{'search_default_open': 1}</field>
+    </record>
+  </data>
+</odoo>

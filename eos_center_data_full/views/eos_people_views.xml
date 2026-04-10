@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- ============================================================
+             VISTAS: Componente 2 — PERSONAS
+             Modelos: eos.seat, eos.people.evaluation
+             ============================================================ -->
+    
+    <!-- Acción GWC -->
+    <record id="action_eos_people_evaluation" model="ir.actions.act_window">
+      <field name="name">Evaluaciones GWC</field>
+      <field name="res_model">eos.people.evaluation</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Formulario del Asiento (Seat) -->
+    <record id="view_eos_seat_form" model="ir.ui.view">
+      <field name="name">eos.seat.form</field>
+      <field name="model">eos.seat</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Asiento — Accountability Chart">
+          <header>
+            <field name="latest_gwc_state" widget="badge" decoration-success="latest_gwc_state == 'right_seat'" decoration-danger="latest_gwc_state == 'wrong_seat'" decoration-warning="latest_gwc_state == 'developing'" decoration-muted="latest_gwc_state == 'not_evaluated'" />
+          </header>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+              <button name="%(action_eos_people_evaluation)d" type="action" class="oe_stat_button" icon="fa-users">
+                <field name="evaluation_ids" widget="statinfo" string="Evaluaciones GWC" />
+              </button>
+            </div>
+            <div class="oe_title">
+              <label for="name" />
+              <h1>
+                <field name="name" placeholder="Ej: Director de Operaciones" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="company_id" />
+                <field name="seat_level" />
+                <field name="parent_seat_id" />
+              </group>
+              <group>
+                <field name="employee_id" />
+                <field name="is_vacant" readonly="1" />
+              </group>
+            </group>
+            <notebook>
+              <page string="Roles y Responsabilidades">
+                <group>
+                  <field name="primary_roles" widget="text" placeholder="1. Responsabilidad principal&#xA;2. Segunda responsabilidad&#xA;(máx. 5 roles)" />
+                  <field name="key_metrics" widget="text" placeholder="Métricas que definen el éxito en este asiento..." />
+                  <field name="description" widget="text" />
+                </group>
+              </page>
+              <page string="Asientos Subordinados">
+                <field name="child_seat_ids">
+                  <tree>
+                    <field name="sequence" widget="handle" />
+                    <field name="name" />
+                    <field name="employee_id" />
+                    <field name="seat_level" />
+                    <field name="latest_gwc_state" widget="badge" decoration-success="latest_gwc_state == 'right_seat'" decoration-danger="latest_gwc_state == 'wrong_seat'" />
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista de Asientos -->
+    <record id="view_eos_seat_list" model="ir.ui.view">
+      <field name="name">eos.seat.list</field>
+      <field name="model">eos.seat</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Accountability Chart" decoration-muted="is_vacant == True">
+          <field name="sequence" widget="handle" />
+          <field name="name" />
+          <field name="seat_level" />
+          <field name="employee_id" />
+          <field name="parent_seat_id" />
+          <field name="is_vacant" optional="show" />
+          <field name="latest_gwc_state" widget="badge" decoration-success="latest_gwc_state == 'right_seat'" decoration-danger="latest_gwc_state == 'wrong_seat'" decoration-warning="latest_gwc_state == 'developing'" />
+          <field name="company_id" optional="hide" />
+        </tree>
+      </field>
+    </record>
+    <!-- Acción Asientos -->
+    <record id="action_eos_seat" model="ir.actions.act_window">
+      <field name="name">Accountability Chart — Asientos</field>
+      <field name="res_model">eos.seat</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">Define el primer asiento del Accountability Chart</p>
+        <p>El <strong>Accountability Chart</strong> es el mapa de responsabilidades de tu organización en EOS.</p>
+      </field>
+    </record>
+    <!-- Formulario Evaluación GWC -->
+    <record id="view_eos_people_evaluation_form" model="ir.ui.view">
+      <field name="name">eos.people.evaluation.form</field>
+      <field name="model">eos.people.evaluation</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Evaluación GWC">
+          <header>
+            <field name="gwc_result" widget="badge" decoration-success="gwc_result == 'right_seat'" decoration-danger="gwc_result == 'wrong_seat'" decoration-warning="gwc_result == 'developing'" />
+          </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="seat_id" />
+                <field name="employee_id" />
+                <field name="evaluator_id" />
+                <field name="date" />
+              </group>
+              <group>
+                <field name="shares_values" />
+                <field name="gwc_result" readonly="1" widget="badge" decoration-success="gwc_result == 'right_seat'" decoration-danger="gwc_result == 'wrong_seat'" decoration-warning="gwc_result == 'developing'" />
+              </group>
+            </group>
+            <separator string="Evaluación de las 3 Dimensiones GWC" />
+            <group>
+              <group string="¿Lo entiende? (Get It)">
+                <field name="get_it" widget="radio" />
+              </group>
+              <group string="¿Lo quiere? (Want It)">
+                <field name="want_it" widget="radio" />
+              </group>
+            </group>
+            <group>
+              <group string="¿Tiene capacidad? (Capacity to Do It)">
+                <field name="capacity_to_do_it" widget="radio" />
+              </group>
+            </group>
+            <group string="Plan de Acción y Notas">
+              <field name="notes" widget="text" colspan="2" placeholder="Observaciones y pasos acordados para mejorar el ajuste..." />
+            </group>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista GWC -->
+    <record id="view_eos_people_evaluation_list" model="ir.ui.view">
+      <field name="name">eos.people.evaluation.list</field>
+      <field name="model">eos.people.evaluation</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Evaluaciones GWC" decoration-success="gwc_result == 'right_seat'" decoration-danger="gwc_result == 'wrong_seat'" decoration-warning="gwc_result == 'developing'">
+          <field name="date" />
+          <field name="seat_id" />
+          <field name="employee_id" />
+          <field name="get_it" />
+          <field name="want_it" />
+          <field name="capacity_to_do_it" />
+          <field name="shares_values" />
+          <field name="gwc_result" widget="badge" decoration-success="gwc_result == 'right_seat'" decoration-danger="gwc_result == 'wrong_seat'" decoration-warning="gwc_result == 'developing'" />
+        </tree>
+      </field>
+    </record>
+
+  </data>
+</odoo>
