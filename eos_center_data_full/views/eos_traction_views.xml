@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- ============================================================
+             VISTAS: Componente 6 — TRACCIÓN (L10 Meeting / To-Dos)
+             ============================================================ -->
+    <!-- Formulario L10 Meeting -->
+    <record id="view_eos_meeting_form" model="ir.ui.view">
+      <field name="name">eos.meeting.form</field>
+      <field name="model">eos.meeting</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Reunión L10 — Level 10 Meeting">
+          <header>
+            <button name="action_start_meeting" string="▶ Iniciar Reunión" type="object" class="btn-primary" invisible="state != 'scheduled'" />
+            <button name="action_complete_meeting" string="✅ Cerrar Reunión" type="object" class="btn-success" invisible="state != 'in_progress'" />
+            <button name="action_cancel_meeting" string="Cancelar" type="object" invisible="state in ['completed','cancelled']" />
+            <field name="state" widget="statusbar" statusbar_visible="scheduled,in_progress,completed" />
+          </header>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+              <button class="oe_stat_button" icon="fa-star">
+                <div class="o_stat_info">
+                  <span class="o_stat_value">
+                    <field name="rating_avg" digits="[4,1]" />/10</span>
+                  <span class="o_stat_text">Calificación</span>
+                </div>
+              </button>
+              <button class="oe_stat_button" icon="fa-check-square-o">
+                <div class="o_stat_info">
+                  <span class="o_stat_value">
+                    <field name="todo_completion_rate" digits="[4,0]" />%</span>
+                  <span class="o_stat_text">To-Dos ✅</span>
+                </div>
+              </button>
+            </div>
+            <div class="oe_title">
+              <h1>
+                <field name="name" placeholder="L10 Semanal TLP Holding — Semana XX, 2025" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="meeting_type" />
+                <field name="date" />
+                <field name="duration_minutes" />
+                <field name="facilitator_id" />
+              </group>
+              <group>
+                <field name="company_id" />
+                <field name="scorecard_id" />
+                <field name="next_meeting_date" />
+              </group>
+            </group>
+            <notebook>
+              <!-- Agenda L10 paso a paso -->
+              <page string="1. Check-In (5 min)">
+                <group>
+                  <field name="checkin_notes" widget="text" colspan="2" placeholder="Ronda de buenas noticias del equipo..." />
+                </group>
+              </page>
+              <page string="2. Scorecard (5 min)">
+                <group>
+                  <field name="scorecard_notes" widget="text" colspan="2" placeholder="¿Qué KPIs están en rojo? ¿Se convierten en Issues?" />
+                </group>
+              </page>
+              <page string="3. Rocas (5 min)">
+                <group>
+                  <field name="rocks_review_notes" widget="text" colspan="2" placeholder="¿Qué Rocas están Off Track? ¿Se convierten en Issues?" />
+                </group>
+              </page>
+              <page string="4. Titulares (5 min)">
+                <group>
+                  <field name="customer_headlines" widget="text" colspan="2" placeholder="Noticias sobre clientes: contratos, quejas, felicitaciones..." />
+                  <field name="employee_headlines" widget="text" colspan="2" placeholder="Noticias sobre el equipo: contrataciones, logros, novedades..." />
+                </group>
+              </page>
+              <page string="5. To-Dos (5 min)">
+                <field name="todo_ids" context="{'default_meeting_id': active_id}">
+                  <tree editable="bottom" decoration-success="state == 'done'" decoration-danger="state == 'not_done'">
+                    <field name="name" string="Compromiso" />
+                    <field name="owner_id" />
+                    <field name="date_due" />
+                    <field name="state" widget="badge" decoration-success="state == 'done'" decoration-danger="state == 'not_done'" />
+                    <button name="action_mark_done" string="✔" type="object" invisible="state == 'done'" />
+                    <button name="action_create_issue_from_todo" string="→ Issue" type="object" invisible="state != 'not_done'" title="Crear Issue desde este To-Do no completado" />
+                  </tree>
+                </field>
+              </page>
+              <page string="6. IDS — Issues (60 min)">
+                <group>
+                  <field name="issue_ids" widget="many2many_tags" colspan="2" />
+                  <field name="ids_notes" widget="text" colspan="2" placeholder="Decisiones tomadas en el proceso IDS de esta reunión..." />
+                </group>
+              </page>
+              <page string="7. Cierre (5 min)">
+                <group>
+                  <field name="closing_notes" widget="text" colspan="2" placeholder="Mensajes finales, compromisos de cierre..." />
+                </group>
+                <separator string="Calificación Individual de la Reunión" />
+                <field name="attendee_ids">
+                  <tree editable="bottom">
+                    <field name="user_id" />
+                    <field name="attended" />
+                    <field name="rating" string="Calificación (1-10)" />
+                  </tree>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista Meetings -->
+    <record id="view_eos_meeting_list" model="ir.ui.view">
+      <field name="name">eos.meeting.list</field>
+      <field name="model">eos.meeting</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Reuniones L10" decoration-muted="state == 'cancelled'">
+          <field name="name" />
+          <field name="meeting_type" />
+          <field name="date" />
+          <field name="facilitator_id" />
+          <field name="rating_avg" />
+          <field name="todo_completion_rate" widget="progressbar" />
+          <field name="state" widget="badge" decoration-success="state == 'completed'" decoration-info="state == 'in_progress'" />
+        </tree>
+      </field>
+    </record>
+    <!-- Acción Meetings -->
+    <record id="action_eos_meeting" model="ir.actions.act_window">
+      <field name="name">Reuniones L10</field>
+      <field name="res_model">eos.meeting</field>
+      <field name="view_mode">list,form</field>
+    </record>
+    <!-- Formulario To-Do -->
+    <record id="view_eos_todo_form" model="ir.ui.view">
+      <field name="name">eos.todo.form</field>
+      <field name="model">eos.todo</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="To-Do (Compromiso Semanal)">
+          <header>
+            <button name="action_mark_done" string="✔ Completar" type="object" class="btn-success" invisible="state == 'done'" />
+            <button name="action_mark_not_done" string="❌ No Completado" type="object" class="btn-danger" invisible="state != 'pending'" />
+            <button name="action_create_issue_from_todo" string="→ Convertir a Issue" type="object" class="btn-warning" invisible="state != 'not_done'" />
+            <field name="state" widget="statusbar" statusbar_visible="pending,done,not_done" />
+          </header>
+          <sheet>
+            <div class="oe_title">
+              <label for="name" string="Compromiso a cumplir" />
+              <h1>
+                <field name="name" placeholder="Ej: Enviar propuesta a cliente X antes del viernes" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="owner_id" />
+                <field name="date_due" />
+                <field name="company_id" invisible="1"/>
+              </group>
+              <group>
+                <field name="meeting_id" />
+                <field name="related_rock_id" />
+                <field name="related_issue_id" readonly="1" invisible="not related_issue_id"/>
+                <field name="date_created" />
+              </group>
+            </group>
+            <notebook>
+              <page string="Notas Adicionales">
+                <field name="notes" placeholder="Agrega contexto o enlaces sobre este compromiso..." />
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <!-- Lista To-Dos -->
+    <record id="view_eos_todo_list" model="ir.ui.view">
+      <field name="name">eos.todo.list</field>
+      <field name="model">eos.todo</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="To-Dos Semanales" decoration-success="state == 'done'" decoration-danger="state == 'not_done'">
+          <field name="name" string="Compromiso" />
+          <field name="owner_id" />
+          <field name="date_due" />
+          <field name="meeting_id" optional="show" />
+          <field name="related_rock_id" optional="show" />
+          <field name="state" widget="badge" decoration-success="state == 'done'" decoration-danger="state == 'not_done'" />
+          <button name="action_mark_done" string="✔ Completar" type="object" invisible="state == 'done'" />
+          <button name="action_mark_not_done" string="❌ No Completado" type="object" invisible="state != 'pending'" />
+        </tree>
+      </field>
+    </record>
+    <!-- Búsqueda To-Dos -->
+    <record id="view_eos_todo_search" model="ir.ui.view">
+      <field name="name">eos.todo.search</field>
+      <field name="model">eos.todo</field>
+      <field name="type">search</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name" />
+          <field name="owner_id" />
+          <separator />
+          <filter string="Pendientes" name="pending" domain="[('state','=','pending')]" />
+          <filter string="Completados" name="done" domain="[('state','=','done')]" />
+          <filter string="No Completados" name="not_done" domain="[('state','=','not_done')]" />
+          <filter string="Mis To-Dos" name="my_todos" domain="[('owner_id','=',uid)]" />
+          <group expand="0" string="Agrupar por">
+            <filter string="Dueño" name="group_owner" context="{'group_by': 'owner_id'}" />
+            <filter string="Estado" name="group_state" context="{'group_by': 'state'}" />
+          </group>
+        </search>
+      </field>
+    </record>
+    <!-- Acción To-Dos -->
+    <record id="action_eos_todo" model="ir.actions.act_window">
+      <field name="name">To-Dos Semanales</field>
+      <field name="res_model">eos.todo</field>
+      <field name="view_mode">list,form</field>
+      <field name="search_view_id" ref="view_eos_todo_search" />
+      <field name="context">{'search_default_pending': 1}</field>
+    </record>
+  </data>
+</odoo>

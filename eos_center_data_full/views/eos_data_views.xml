@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- ============================================================
+             VISTAS: Componente 3 — DATOS (Scorecard / KPI / OKR)
+             ============================================================ -->
+    <!-- Formulario Scorecard -->
+    <record id="view_eos_scorecard_form" model="ir.ui.view">
+      <field name="name">eos.scorecard.form</field>
+      <field name="model">eos.scorecard</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="Scorecard Semanal EOS">
+          <header>
+            <button name="action_rollover_next_week" string="➡️ Cerrar y Generar Siguiente Semana" type="object" class="btn-primary" invisible="state == 'closed'"/>
+            <field name="state" widget="statusbar" statusbar_visible="active,closed"/>
+          </header>
+          <sheet>
+            <div class="oe_button_box" name="button_box">
+              <button class="oe_stat_button" icon="fa-bar-chart" type="object" name="action_view_kpis">
+                <div class="o_stat_info">
+                  <span class="o_stat_value">
+                    <field name="kpi_count" />
+                  </span>
+                  <span class="o_stat_text">KPIs</span>
+                </div>
+              </button>
+              <button class="oe_stat_button" icon="fa-check-circle" type="object" name="action_view_kpis">
+                <div class="o_stat_info">
+                  <span class="o_stat_value" style="color:green">
+                    <field name="kpi_green_count" />
+                  </span>
+                  <span class="o_stat_text">En Meta ✅</span>
+                </div>
+              </button>
+              <button class="oe_stat_button" icon="fa-times-circle" type="object" name="action_view_kpis">
+                <div class="o_stat_info">
+                  <span class="o_stat_value" style="color:red">
+                    <field name="kpi_red_count" />
+                  </span>
+                  <span class="o_stat_text">Fuera de Meta 🔴</span>
+                </div>
+              </button>
+            </div>
+            <div class="oe_title">
+              <h1>
+                <field name="name" placeholder="Scorecard Semanal TLP Holding 2025" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="company_id" />
+                <field name="responsible_id" />
+              </group>
+              <group>
+                <field name="week_number" />
+                <field name="year" />
+                <field name="health_percentage" widget="progressbar" />
+              </group>
+            </group>
+            <separator string="Indicadores Clave (KPIs)" />
+            <field name="kpi_ids" context="{'default_scorecard_id': active_id}">
+              <tree editable="bottom" decoration-success="weekly_status == 'green'" decoration-danger="weekly_status == 'red'" decoration-muted="weekly_status == 'not_reported'">
+                <field name="sequence" widget="handle" />
+                <field name="name" string="Indicador" />
+                <field name="owner_id" />
+                <field name="goal_value" string="Meta" />
+                <field name="current_value" string="Valor Real" />
+                <field name="unit_of_measure" string="Unidad" optional="show" />
+                <field name="weekly_status" widget="badge" decoration-success="weekly_status == 'green'" decoration-danger="weekly_status == 'red'" decoration-muted="weekly_status == 'not_reported'" />
+                <button name="action_log_weekly_record" string="📌 Guardar" type="object" title="Registrar valor de esta semana" />
+              </tree>
+            </field>
+            <group string="Notas de la Semana">
+              <field name="notes" widget="text" colspan="2" />
+            </group>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista Scorecard -->
+    <record id="view_eos_scorecard_list" model="ir.ui.view">
+      <field name="name">eos.scorecard.list</field>
+      <field name="model">eos.scorecard</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="Scorecards" decoration-muted="state == 'closed'">
+          <field name="name" />
+          <field name="week_number" />
+          <field name="year" optional="show" />
+          <field name="create_date" string="Fecha Creada" widget="date" />
+          <field name="company_id" />
+          <field name="responsible_id" />
+          <field name="kpi_count" />
+          <field name="kpi_green_count" />
+          <field name="kpi_red_count" />
+          <field name="health_percentage" widget="progressbar" />
+          <field name="state" widget="badge" decoration-success="state == 'active'" />
+        </tree>
+      </field>
+    </record>
+    <!-- Búsqueda / Filtros Scorecard -->
+    <record id="view_eos_scorecard_search" model="ir.ui.view">
+      <field name="name">eos.scorecard.search</field>
+      <field name="model">eos.scorecard</field>
+      <field name="arch" type="xml">
+        <search string="Buscar Scorecards">
+          <field name="name"/>
+          <field name="week_number"/>
+          <field name="year"/>
+          <group expand="0" string="Agrupar por...">
+            <filter string="Por Semana" name="group_by_week" context="{'group_by':'week_number'}"/>
+            <filter string="Por Año" name="group_by_year" context="{'group_by':'year'}"/>
+            <filter string="Por Estado" name="group_by_state" context="{'group_by':'state'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+    <!-- Acción Scorecard -->
+    <record id="action_eos_scorecard" model="ir.actions.act_window">
+      <field name="name">Scorecard Semanal</field>
+      <field name="res_model">eos.scorecard</field>
+      <field name="view_mode">list,form</field>
+      <field name="context">{'search_default_group_by_year': 1, 'search_default_group_by_week': 1}</field>
+    </record>
+    
+    <!-- Vistas Independientes de KPIs (Para Smart Buttons) -->
+    <record id="view_eos_kpi_tree" model="ir.ui.view">
+      <field name="name">eos.kpi.tree</field>
+      <field name="model">eos.kpi</field>
+      <field name="arch" type="xml">
+        <tree string="KPIs">
+          <field name="name"/>
+          <field name="owner_id"/>
+          <field name="goal_value"/>
+          <field name="current_value"/>
+          <field name="weekly_status" widget="badge"/>
+        </tree>
+      </field>
+    </record>
+    
+    <record id="view_eos_kpi_form" model="ir.ui.view">
+      <field name="name">eos.kpi.form</field>
+      <field name="model">eos.kpi</field>
+      <field name="arch" type="xml">
+        <form string="KPI">
+          <sheet>
+            <group>
+                <group>
+                    <field name="name"/>
+                    <field name="owner_id"/>
+                    <field name="scorecard_id"/>
+                </group>
+                <group>
+                    <field name="kpi_type"/>
+                    <field name="goal_value"/>
+                    <field name="current_value"/>
+                    <field name="weekly_status" widget="badge"/>
+                </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- Formulario OKR -->
+    <record id="view_eos_okr_form" model="ir.ui.view">
+      <field name="name">eos.okr.form</field>
+      <field name="model">eos.okr</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <form string="OKR — Objetivo y Resultados Clave">
+          <header>
+            <button name="action_activate" string="Activar" type="object" class="btn-primary" invisible="state != 'draft'" />
+            <button name="action_complete" string="Completar ✔" type="object" class="btn-success" invisible="state != 'active'" />
+            <button name="action_rollover_next_week" string="➡️ Arrastrar a Siguiente Semana" type="object" class="btn-warning" invisible="state == 'completed'"/>
+            <field name="state" widget="statusbar" statusbar_visible="draft,active,completed" />
+          </header>
+          <sheet>
+            <div class="oe_title">
+              <label for="name" string="Objetivo" />
+              <h1>
+                <field name="name" placeholder="¿Qué queremos lograr este trimestre?" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name="company_id" />
+                <field name="owner_id" />
+                <field name="period" />
+                <field name="rock_id" />
+              </group>
+              <group>
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="week_number" />
+                <field name="year" />
+                <field name="overall_progress" widget="progressbar" />
+              </group>
+            </group>
+            <separator string="Resultados Clave" />
+            <field name="key_result_ids">
+              <tree editable="bottom" decoration-success="status == 'completed'" decoration-warning="status == 'at_risk'" decoration-danger="status == 'off_track'">
+                <field name="sequence" widget="handle" />
+                <field name="name" string="Resultado Clave" />
+                <field name="owner_id" />
+                <field name="baseline_value" string="Línea Base" />
+                <field name="target_value" string="Objetivo" />
+                <field name="current_value" string="Actual" />
+                <field name="unit" string="Unidad" />
+                <field name="progress" widget="progressbar" />
+                <field name="status" widget="badge" decoration-success="status == 'completed'" decoration-warning="status == 'at_risk'" decoration-danger="status == 'off_track'" decoration-info="status == 'on_track'" />
+              </tree>
+            </field>
+            <group>
+              <field name="description" widget="text" colspan="2" />
+            </group>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="activity_ids" />
+            <field name="message_ids" />
+          </div>
+        </form>
+      </field>
+    </record>
+    <!-- Lista OKR -->
+    <record id="view_eos_okr_list" model="ir.ui.view">
+      <field name="name">eos.okr.list</field>
+      <field name="model">eos.okr</field>
+      <field name="type">tree</field>
+      <field name="arch" type="xml">
+        <tree string="OKRs" decoration-success="state == 'completed'" decoration-muted="state == 'cancelled'">
+          <field name="name" />
+          <field name="week_number" />
+          <field name="year" optional="show" />
+          <field name="create_date" string="Fecha Creada" widget="date" />
+          <field name="owner_id" />
+          <field name="period" />
+          <field name="date_end" />
+          <field name="overall_progress" widget="progressbar" />
+          <field name="state" widget="badge" decoration-success="state == 'completed'" decoration-info="state == 'active'" />
+        </tree>
+      </field>
+    </record>
+    <!-- Búsqueda / Filtros OKR -->
+    <record id="view_eos_okr_search" model="ir.ui.view">
+      <field name="name">eos.okr.search</field>
+      <field name="model">eos.okr</field>
+      <field name="arch" type="xml">
+        <search string="Buscar OKRs">
+          <field name="name"/>
+          <field name="week_number"/>
+          <field name="year"/>
+          <group expand="0" string="Agrupar por...">
+            <filter string="Por Semana" name="group_by_week" context="{'group_by':'week_number'}"/>
+            <filter string="Por Año" name="group_by_year" context="{'group_by':'year'}"/>
+            <filter string="Por Estado" name="group_by_state" context="{'group_by':'state'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+    <!-- Acción OKR -->
+    <record id="action_eos_okr" model="ir.actions.act_window">
+      <field name="name">OKRs — Objetivos y Resultados Clave</field>
+      <field name="res_model">eos.okr</field>
+      <field name="view_mode">list,form</field>
+      <field name="context">{'search_default_group_by_year': 1, 'search_default_group_by_week': 1}</field>
+    </record>
+  </data>
+</odoo>

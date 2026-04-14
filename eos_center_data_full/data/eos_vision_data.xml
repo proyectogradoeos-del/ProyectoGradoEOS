@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    ================================================================
+    DATOS POR DEFECTO — EOS Center Data
+    ================================================================
+    Este archivo se carga una sola vez durante la instalación del
+    módulo (noupdate="1" garantiza que no se sobreescriba en
+    actualizaciones del módulo).
+
+    Contiene:
+    - Parámetro de sistema: versión del módulo EOS
+    ================================================================
+    -->
+    <data noupdate="1">
+
+        <!-- Parámetro de versión del módulo -->
+        <record id="param_eos_version" model="ir.config_parameter">
+            <field name="key">eos_center_data.version</field>
+            <field name="value">17.0.1.0.0</field>
+        </record>
+
+        <!-- Parámetro: empresa cliente -->
+        <record id="param_eos_client" model="ir.config_parameter">
+            <field name="key">eos_center_data.client_name</field>
+            <field name="value">TLP Holding - Technology Latam Partners Colombia S.A.S.</field>
+        </record>
+
+    </data>
+</odoo>

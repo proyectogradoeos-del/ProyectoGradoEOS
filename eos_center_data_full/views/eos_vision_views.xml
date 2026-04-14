@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- ============================================================
+             VISTAS: eos.vision (V/TO - Vision/Traction Organizer)
+             ============================================================ -->
+
+        <!-- Vista de formulario principal del V/TO -->
+        <record id="view_eos_vision_form" model="ir.ui.view">
+            <field name="name">eos.vision.form</field>
+            <field name="model">eos.vision</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="V/TO — Visión y Tracción">
+
+                    <!-- Barra de estado superior -->
+                    <header>
+                        <button name="action_set_review"
+                                string="Enviar a Revisión"
+                                type="object"
+                                class="btn-primary"
+                                invisible="state != 'draft'"/>
+                        <button name="action_approve"
+                                string="Aprobar V/TO"
+                                type="object"
+                                class="btn-success"
+                                invisible="state != 'review'"
+                                groups="eos_center_data_full.group_eos_director"/>
+                        <button name="action_set_draft"
+                                string="Volver a Borrador"
+                                type="object"
+                                invisible="state not in ['review']"
+                                groups="eos_center_data_full.group_eos_director"/>
+                        <button name="action_archive_vto"
+                                string="Archivar"
+                                type="object"
+                                invisible="state != 'approved'"
+                                groups="eos_center_data_full.group_eos_admin"
+                                confirm="¿Estás seguro de archivar este V/TO? Esta acción lo inactivará."/>
+                        <field name="state"
+                               widget="statusbar"
+                               statusbar_visible="draft,review,approved"/>
+                    </header>
+
+                    <sheet>
+                        <!-- Smart Buttons -->
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_rocks"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-flag">
+                                <field name="annual_rocks_ids"
+                                       widget="statinfo"
+                                       string="Rocas"/>
+                            </button>
+
+                        </div>
+
+                        <!-- Encabezado del documento -->
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name"
+                                       placeholder="Ej: V/TO 2025 — TLP Holding"
+                                       readonly="state == 'approved'"/>
+                            </h1>
+                        </div>
+
+                        <!-- Campos de cabecera -->
+                        <group>
+                            <group>
+                                <field name="company_id"
+                                       readonly="state == 'approved'"/>
+                                <field name="fiscal_year"
+                                       readonly="state == 'approved'"/>
+                                <field name="responsible_id"
+                                       readonly="state == 'approved'"/>
+                            </group>
+                            <group>
+                                <field name="last_review_date"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+
+                            <!-- ================================================
+                                 PESTAÑA 1: VISIÓN CORPORATIVA
+                                 ================================================ -->
+                            <page string="🏛️ Visión Corporativa" name="corporate_vision">
+
+                                <group string="Valores y Propósito Fundamental">
+                                    <field name="core_values"
+                                           placeholder="Enumera los 3-7 valores fundamentales de la empresa..."
+                                           readonly="state == 'approved'"
+                                           widget="text"/>
+                                    <field name="core_focus_purpose"
+                                           placeholder="¿Por qué existe la empresa más allá de ganar dinero?"
+                                           readonly="state == 'approved'"
+                                           widget="text"/>
+                                    <field name="core_focus_niche"
+                                           placeholder="¿En qué área somos o aspiramos a ser los mejores?"
+                                           readonly="state == 'approved'"
+                                           widget="text"/>
+                                </group>
+
+                                <group string="Objetivo a 10 Años (BHAG)">
+                                    <field name="goal_10_years"
+                                           placeholder="La meta grande, osada y audaz para los próximos 10 años..."
+                                           readonly="state == 'approved'"
+                                           widget="text"/>
+                                    <field name="marketing_strategy"
+                                           placeholder="¿Qué hace única a la empresa? Mercado objetivo + diferenciadores..."
+                                           readonly="state == 'approved'"
+                                           widget="text"/>
+                                </group>
+
+                            </page>
+
+                            <!-- ================================================
+                                 PESTAÑA 2: PLAN A 3 AÑOS
+                                 ================================================ -->
+                            <page string="📅 Plan a 3 Años" name="plan_3_years">
+
+                                <group string="Metas Financieras a 3 Años">
+                                    <group>
+                                        <field name="goal_3_years_date"
+                                               readonly="state == 'approved'"/>
+                                        <field name="goal_3_years_revenue"
+                                               readonly="state == 'approved'"/>
+                                    </group>
+                                    <group>
+                                        <field name="goal_3_years_profit"
+                                               readonly="state == 'approved'"/>
+                                    </group>
+                                </group>
+
+                                <group string="Métricas y Descripción del Estado Ideal">
+                                    <field name="goal_3_years_measurables"
+                                           placeholder="Lista los indicadores clave que definen el éxito a 3 años..."
+                                           readonly="state == 'approved'"
+                                           widget="text"
+                                           colspan="2"/>
+                                    <field name="goal_3_years_description"
+                                           placeholder="Describe cómo se ve la empresa en 3 años: estructura, cultura, mercado..."
+                                           readonly="state == 'approved'"
+                                           widget="text"
+                                           colspan="2"/>
+                                </group>
+
+                            </page>
+
+                            <!-- ================================================
+                                 PESTAÑA 3: PLAN ANUAL Y ROCAS
+                                 ================================================ -->
+                            <page string="🎯 Plan Anual y Rocas" name="annual_plan">
+
+                                <group string="Metas Financieras del Año">
+                                    <group>
+                                        <field name="goal_1_year_date"
+                                               readonly="state == 'approved'"/>
+                                        <field name="goal_1_year_revenue"
+                                               readonly="state == 'approved'"/>
+                                    </group>
+                                    <group>
+                                        <field name="goal_1_year_profit"
+                                               readonly="state == 'approved'"/>
+                                    </group>
+                                </group>
+
+                                <group string="Métricas del Año">
+                                    <field name="goal_1_year_measurables"
+                                           placeholder="Indicadores y metas concretas para este año..."
+                                           readonly="state == 'approved'"
+                                           widget="text"
+                                           colspan="2"/>
+                                </group>
+
+                                <separator string="Prioridades Anuales (Rocas de Empresa)"/>
+
+                                <field name="annual_rocks_ids"
+                                       context="{'default_vision_id': active_id}"/>
+
+                            </page>
+
+                            <!-- ================================================
+                                 PESTAÑA 4: ISSUES Y NOTAS
+                                 ================================================ -->
+                            <page string="⚠️ Issues y Notas" name="issues_notes">
+
+                                <group string="Issues de Visión (Obstáculos Estratégicos)">
+                                    <field name="vision_issues"
+                                           placeholder="Lista los problemas o bloqueos que amenazan el cumplimiento de la visión..."
+                                           widget="text"
+                                           colspan="2"/>
+                                </group>
+
+                                <group string="Notas Adicionales">
+                                    <field name="notes"
+                                           widget="html"
+                                           colspan="2"/>
+                                </group>
+
+                            </page>
+
+                        </notebook>
+                    </sheet>
+
+                    <!-- Chatter (historial de cambios y mensajes) -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de lista del V/TO -->
+        <record id="view_eos_vision_list" model="ir.ui.view">
+            <field name="name">eos.vision.list</field>
+            <field name="model">eos.vision</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="V/TO — Visiones" decoration-muted="state == 'archived'"
+                       decoration-success="state == 'approved'">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="fiscal_year"/>
+                    <field name="responsible_id"/>
+                    <field name="last_review_date"/>
+                    <field name="vision_score_avg" widget="progressbar" optional="show"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'approved'"
+                           decoration-warning="state == 'review'"
+                           decoration-muted="state == 'archived'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de búsqueda -->
+        <record id="view_eos_vision_search" model="ir.ui.view">
+            <field name="name">eos.vision.search</field>
+            <field name="model">eos.vision</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Buscar V/TO">
+                    <field name="name" string="Nombre del V/TO"/>
+                    <field name="company_id"/>
+                    <field name="responsible_id"/>
+                    <field name="fiscal_year"/>
+                    <separator/>
+                    <filter string="Aprobados" name="approved"
+                            domain="[('state', '=', 'approved')]"/>
+                    <filter string="En Revisión" name="review"
+                            domain="[('state', '=', 'review')]"/>
+                    <filter string="Borradores" name="draft"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter string="Archivados" name="archived"
+                            domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Empresa" name="group_company"
+                                context="{'group_by': 'company_id'}"/>
+                        <filter string="Estado" name="group_state"
+                                context="{'group_by': 'state'}"/>
+                        <filter string="Año Fiscal" name="group_year"
+                                context="{'group_by': 'fiscal_year'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Acción de ventana para el V/TO -->
+        <record id="action_eos_vision" model="ir.actions.act_window">
+            <field name="name">V/TO — Visión y Tracción</field>
+            <field name="res_model">eos.vision</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_eos_vision_search"/>
+            <field name="context">{'search_default_approved': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    ¡Crea tu primer V/TO!
+                </p>
+                <p>
+                    El <strong>V/TO (Vision/Traction Organizer)</strong> es la herramienta
+                    central de EOS para definir y comunicar la visión estratégica de tu empresa.
+                    Incluye valores, propósito, objetivos a 10/3/1 año y las prioridades
+                    del trimestre (Rocas).
+                </p>
+            </field>
+        </record>
+
+        <!-- ============================================================
+             VISTAS: eos.vision.rock (Rocas)
+             ============================================================ -->
+
+        <!-- Formulario de Roca -->
+        <record id="view_eos_vision_rock_form" model="ir.ui.view">
+            <field name="name">eos.vision.rock.form</field>
+            <field name="model">eos.vision.rock</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Roca — Prioridad Estratégica">
+                    <header>
+                        <button name="action_mark_on_track"
+                                string="✅ En Camino"
+                                type="object"
+                                class="btn-success"
+                                invisible="state in ['on_track', 'done', 'cancelled']"/>
+                        <button name="action_mark_off_track"
+                                string="⚠️ Fuera de Camino"
+                                type="object"
+                                class="btn-warning"
+                                invisible="state in ['off_track', 'done', 'cancelled']"/>
+                        <button name="action_mark_done"
+                                string="✔ Completada"
+                                type="object"
+                                class="btn-primary"
+                                invisible="state == 'done'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="not_started,on_track,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Describe la Roca de forma concisa y accionable..."/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="vision_id"/>
+                                <field name="owner_id"/>
+                                <field name="department_id"/>
+                                <field name="rock_type"/>
+                                <field name="parent_id" domain="[('id', '!=', active_id), ('vision_id', '=', vision_id)]"/>
+                            </group>
+                            <group>
+                                <field name="quarter"/>
+                                <field name="date_start"/>
+                                <field name="date_deadline"/>
+                                <field name="progress" widget="progressbar"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Descripción y Seguimiento">
+                                <group string="Descripción y Criterios de Éxito">
+                                    <field name="description"
+                                           placeholder="¿Cómo se verá cuando esta Roca esté completada? ¿Qué criterios SMART se usarán?"
+                                           widget="text"
+                                           colspan="2"/>
+                                </group>
+                                <group string="Notas de Seguimiento">
+                                    <field name="notes"
+                                           placeholder="Anota el avance del último check-in semanal..."
+                                           widget="text"
+                                           colspan="2"/>
+                                </group>
+                            </page>
+                            <page string="Rocas Alineadas (Hijas)">
+                                <field name="child_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="owner_id"/>
+                                        <field name="rock_type"/>
+                                        <field name="progress" widget="progressbar"/>
+                                        <field name="state" widget="badge" decoration-success="state == 'done'" decoration-warning="state == 'off_track'" decoration-info="state == 'on_track'"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Lista de Rocas -->
+        <record id="view_eos_vision_rock_list" model="ir.ui.view">
+            <field name="name">eos.vision.rock.list</field>
+            <field name="model">eos.vision.rock</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Rocas"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'off_track'"
+                       decoration-muted="state == 'cancelled'">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="vision_id" optional="show"/>
+                    <field name="company_id" optional="hide"/>
+                    <field name="owner_id"/>
+                    <field name="rock_type"/>
+                    <field name="quarter"/>
+                    <field name="date_deadline"/>
+                    <field name="progress" widget="progressbar"/>
+                    <field name="state" widget="badge"
+                           decoration-success="state == 'done'"
+                           decoration-warning="state == 'off_track'"
+                           decoration-info="state == 'on_track'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Kanban de Rocas -->
+        <record id="view_eos_vision_rock_kanban" model="ir.ui.view">
+            <field name="name">eos.vision.rock.kanban</field>
+            <field name="model">eos.vision.rock</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="name"/>
+                    <field name="owner_id"/>
+                    <field name="date_deadline"/>
+                    <field name="progress"/>
+                    <field name="state"/>
+                    <field name="rock_type"/>
+                    <field name="parent_id"/>
+                    <field name="child_ids"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_record_title">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div>
+                                        <span class="text-muted">Dueño: </span>
+                                        <field name="owner_id"/>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted">Fecha límite: </span>
+                                        <field name="date_deadline"/>
+                                    </div>
+                                    <div class="mt-2">
+                                        <t t-if="record.child_ids.raw_value and record.child_ids.raw_value.length &gt; 0">
+                                            <span class="badge text-bg-primary border me-1 d-inline-block text-truncate align-middle" style="max-width: 100%;" title="Esta roca tiene subtareas o hijas asignadas">
+                                                <i class="fa fa-sitemap"/> Padre de: <t t-esc="record.child_ids.value"/>
+                                            </span>
+                                        </t>
+                                        <t t-if="record.parent_id.raw_value">
+                                            <span class="badge text-bg-info border d-inline-block text-truncate align-middle" style="max-width: 100%;" title="Subordinada a otra roca">
+                                                <i class="fa fa-link"/> Hija de: <t t-esc="record.parent_id.value"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="mt-2">
+                                        <field name="progress" widget="progressbar"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Búsqueda de Rocas -->
+        <record id="view_eos_vision_rock_search" model="ir.ui.view">
+            <field name="name">eos.vision.rock.search</field>
+            <field name="model">eos.vision.rock</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Rocas">
+                    <field name="name"/>
+                    <field name="owner_id"/>
+                    <field name="vision_id"/>
+                    <separator/>
+                    <filter string="En Camino" name="on_track" domain="[('state','=','on_track')]"/>
+                    <filter string="Fuera de Camino" name="off_track" domain="[('state','=','off_track')]"/>
+                    <filter string="Completadas" name="done" domain="[('state','=','done')]"/>
+                    <separator/>
+                    <filter string="Mis Rocas" name="my_rocks"
+                            domain="[('owner_id','=',uid)]"/>
+                    <separator/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Dueño" name="group_owner"
+                                context="{'group_by': 'owner_id'}"/>
+                        <filter string="Trimestre" name="group_quarter"
+                                context="{'group_by': 'quarter'}"/>
+                        <filter string="Tipo" name="group_type"
+                                context="{'group_by': 'rock_type'}"/>
+                        <filter string="Estado" name="group_state"
+                                context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Acción para Rocas -->
+        <record id="action_eos_vision_rocks" model="ir.actions.act_window">
+            <field name="name">Rocas — Prioridades Estratégicas</field>
+            <field name="res_model">eos.vision.rock</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="view_eos_vision_rock_search"/>
+            <field name="context">{'search_default_my_rocks': 0}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    ¡Define las primeras Rocas!
+                </p>
+                <p>
+                    Las <strong>Rocas</strong> son las 3-7 prioridades más importantes
+                    de la empresa para este trimestre. Cada Roca tiene un dueño único
+                    y una fecha límite clara.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

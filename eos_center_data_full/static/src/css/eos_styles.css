@@ -1,0 +1,83 @@
+/* ================================================================
+   EOS Center Data — Estilos personalizados para Odoo 17
+   ================================================================
+   Archivo: static/src/css/eos_styles.css
+   Descripción: Estilos visuales del módulo EOS para TLP Holding.
+   Compatible con Odoo 17 (Owl framework, Bootstrap 5).
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   Variables de color de la marca EOS
+   ---------------------------------------------------------------- */
+:root {
+    --eos-primary: #1a73e8;
+    --eos-success: #34a853;
+    --eos-warning: #fbbc04;
+    --eos-danger: #ea4335;
+    --eos-dark: #202124;
+    --eos-light-bg: #f8f9fa;
+    --eos-border: #dadce0;
+}
+
+/* ----------------------------------------------------------------
+   Tarjetas de estado de Rocas en la vista Kanban
+   ---------------------------------------------------------------- */
+.o_kanban_record .eos_rock_on_track {
+    border-left: 4px solid var(--eos-success);
+}
+
+.o_kanban_record .eos_rock_off_track {
+    border-left: 4px solid var(--eos-warning);
+}
+
+.o_kanban_record .eos_rock_done {
+    border-left: 4px solid var(--eos-primary);
+    opacity: 0.75;
+}
+
+/* ----------------------------------------------------------------
+   Badge de nivel de alineación en Puntuación de Visión
+   ---------------------------------------------------------------- */
+.badge.eos_alignment_high {
+    background-color: var(--eos-success) !important;
+    color: #fff !important;
+}
+
+.badge.eos_alignment_medium {
+    background-color: var(--eos-warning) !important;
+    color: var(--eos-dark) !important;
+}
+
+.badge.eos_alignment_low {
+    background-color: var(--eos-danger) !important;
+    color: #fff !important;
+}
+
+/* ----------------------------------------------------------------
+   Encabezado del formulario V/TO
+   ---------------------------------------------------------------- */
+.o_form_view .eos_vto_header {
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    color: #fff;
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin-bottom: 16px;
+}
+
+/* ----------------------------------------------------------------
+   Indicador de puntuación de visión en el smart button
+   ---------------------------------------------------------------- */
+.o_stat_value.eos_score_high {
+    color: var(--eos-success);
+    font-weight: 700;
+}
+
+.o_stat_value.eos_score_medium {
+    color: var(--eos-warning);
+    font-weight: 700;
+}
+
+.o_stat_value.eos_score_low {
+    color: var(--eos-danger);
+    font-weight: 700;
+}
