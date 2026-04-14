@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+        ============================================================
+        CATEGORÍA DE SEGURIDAD DEL MÓDULO EOS
+        ============================================================
+        Define el grupo de aplicación que aparece en la configuración
+        de usuarios bajo "EOS Center Data".
+        -->
+        <record id="module_category_eos" model="ir.module.category">
+            <field name="name">EOS Center Data</field>
+            <field name="description">
+                Gestión de la metodología EOS (Entrepreneurial Operating System)
+                para TLP Holding dentro de la plataforma Odoo.
+            </field>
+            <field name="sequence">100</field>
+        </record>
+
+        <!--
+        ============================================================
+        GRUPOS DE USUARIO
+        ============================================================
+        Jerarquía de acceso (de menor a mayor):
+          1. Colaborador  — Solo lectura sobre Visión y Rocas
+          2. Líder de Área — Puede registrar y actualizar Rocas de su área
+          3. Directivo    — Acceso completo a Visión, Rocas y Puntuaciones
+          4. Administrador — Configuración y administración total del módulo
+        ============================================================
+        -->
+
+        <!-- Grupo 1: Colaborador (solo lectura) -->
+        <record id="group_eos_collaborator" model="res.groups">
+            <field name="name">Colaborador</field>
+            <field name="category_id" ref="module_category_eos"/>
+            <field name="comment">
+                Acceso de solo lectura al V/TO y Rocas de la empresa.
+                Puede ver la visión y las prioridades estratégicas pero
+                no modificarlas.
+            </field>
+        </record>
+
+        <!-- Grupo 2: Líder de Área -->
+        <record id="group_eos_leader" model="res.groups">
+            <field name="name">Líder de Área</field>
+            <field name="category_id" ref="module_category_eos"/>
+            <field name="implied_ids" eval="[(4, ref('group_eos_collaborator'))]"/>
+            <field name="comment">
+                Puede crear y gestionar Rocas de área e individuales.
+                Puede actualizar el estado y progreso de las Rocas asignadas.
+                No puede modificar el V/TO ni las secciones estratégicas.
+            </field>
+        </record>
+
+        <!-- Grupo 3: Directivo (EOS Leadership Team) -->
+        <record id="group_eos_director" model="res.groups">
+            <field name="name">Directivo / Leadership Team</field>
+            <field name="category_id" ref="module_category_eos"/>
+            <field name="implied_ids" eval="[(4, ref('group_eos_leader'))]"/>
+            <field name="comment">
+                Acceso completo de lectura y escritura sobre Visión,
+                Rocas y Puntuaciones de Visión.
+                Puede aprobar y archivar V/TOs.
+                Equivale al "Leadership Team" en la metodología EOS.
+            </field>
+        </record>
+
+        <!-- Grupo 4: Administrador EOS -->
+        <record id="group_eos_admin" model="res.groups">
+            <field name="name">Administrador EOS</field>
+            <field name="category_id" ref="module_category_eos"/>
+            <field name="implied_ids" eval="[(4, ref('group_eos_director'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+            <field name="comment">
+                Acceso total al módulo EOS incluyendo configuración,
+                eliminación de registros y gestión de parámetros del sistema.
+            </field>
+        </record>
+
+    </data>
+</odoo>
